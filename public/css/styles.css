@@ -14,10 +14,7 @@ header {
     background-color: #1e1e1e;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.links{
-    text-align: right;
-    color: aqua;
-}
+
 
 header .logo {
     height: 50px;
