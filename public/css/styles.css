@@ -183,7 +183,7 @@ footer a {
 /* Additional Styling for Images and Layout */
 img {
     max-width: 100%;
-    height: auto;
+    height: 300px;
 }
 
 .team {

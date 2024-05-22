@@ -74,61 +74,7 @@
         <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
     </footer>
     <script src="js/scripts.js">
-        netlifyIdentity.init();
-
-// Add event listener to login button
-document.getElementById('google-login').addEventListener('click', () => {
-    netlifyIdentity.open('login');
-});
-
-// Listen for login event
-netlifyIdentity.on('login', user => {
-    console.log('Logged in user:', user);
-    window.location.href = 'account.html';
-});
-
-// Listen for logout event
-netlifyIdentity.on('logout', () => {
-    console.log('User logged out');
-});
-
-// Radix DLT Wallet Login
-document.getElementById('radix-login').addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-        // Example Radix DLT login process
-        const wallet = await RadixDLT.wallet();
-        const account = await wallet.connect();
-        document.getElementById('user-details').innerHTML = `
-            <p><strong>Wallet Address:</strong> ${account.address}</p>
-            <p><strong>Balance:</strong> ${account.balance}</p>
-        `;
-    } catch (error) {
-        console.error('Radix DLT login failed:', error);
-    }
-});
-
-// Check if the user is logged in
-const user = netlifyIdentity.currentUser();
-if (user) {
-    document.getElementById('user-details').innerHTML = `
-        <p><strong>Username:</strong> ${user.user_metadata.full_name}</p>
-        <p><strong>Email:</strong> ${user.email}</p>
-    `;
-} else {
-    document.getElementById('user-details').innerHTML = '<p>Please log in to view your account details.</p>';
-}
-
-// Add event listener to logout button
-document.getElementById('logout-button').addEventListener('click', () => {
-    netlifyIdentity.logout();
-    window.location.href = 'index.html';
-});
-
-// Listen for logout event
-netlifyIdentity.on('logout', () => {
-    window.location.href = 'index.html';
-});
+        
     </script>
     
 </body>
