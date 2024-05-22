@@ -39,6 +39,11 @@
                 <input type="text" id="clan-name" name="clan-name" required>
                 <label for="clan-description">Description:</label>
                 <textarea id="clan-description" name="clan-description" required></textarea>
+                <label for="clan-status">Status:</label>
+                        <select id="clan-status" name="clan-status">
+                            <option value="open">Open</option>
+                            <option value="closed">Closed</option>
+                        </select>
                 <button type="submit">Create Clan</button>
             </form>
         </div>
@@ -91,10 +96,19 @@
             e.preventDefault();
             const clanName = document.getElementById('clan-name').value;
             const clanDescription = document.getElementById('clan-description').value;
+            const clanStatus = document.getElementById('clan-status').value;
+            // Add code to save the clan information (use a backend or local storage for now)
+            alert(`Clan "${clanName}" created with status "${clanStatus}"!`);
+            addClanToList({ name: clanName, description: clanDescription, status: clanStatus });
             // Add code to save the clan information
             alert(`Clan ${clanName} created!`);
         });
-
+        const addClanToList = (clan) => {
+            const clanList = document.getElementById('clan-list');
+            const li = document.createElement('li');
+            li.textContent = `${clan.name} (${clan.status}): ${clan.description}`;
+            clanList.appendChild(li);
+        };
         // Handle Clan Joining
         document.getElementById('join-clan-form').addEventListener('submit', (e) => {
             e.preventDefault();
