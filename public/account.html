@@ -22,6 +22,7 @@
                 <li><a href="contact.html">Contact Us</a></li>
                 <li><a href="account.html">Account</a></li>
             </ul>
+            
         </nav>
         <button id="logout-button" style="display:none;">Log Out</button>
     </header>
@@ -48,6 +49,27 @@
                 </div>
             </div>
         </section>
+        <section class="account">
+            <h1>Welcome to Your Account</h1>
+            <div id="user-details">
+                <!-- User details will be displayed here -->
+            </div>
+            <div id="user-stats">
+                <h2>Your Stats</h2>
+                <p>Level: <span id="user-level">1</span></p>
+                <p>Experience: <span id="user-experience">0</span> XP</p>
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <p>Badges: <span id="user-badges">None</span></p>
+            </div>
+            <div id="user-activity">
+                <h2>Recent Activity</h2>
+                <ul id="activity-list">
+                    <li>No recent activity.</li>
+                </ul>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -59,17 +81,26 @@
         // Initialize Netlify Identity
         netlifyIdentity.init();
 
-        // Check if the user is logged in
         const user = netlifyIdentity.currentUser();
         if (user) {
+            const userName = user.user_metadata.full_name || user.email;
             document.getElementById('user-details').innerHTML = `
-                <p><strong>Username:</strong> ${user.user_metadata.full_name}</p>
+                <p><strong>Username:</strong> ${userName}</p>
                 <p><strong>Email:</strong> ${user.email}</p>
             `;
-            document.getElementById('logout-button').style.display = 'block';
+            document.getElementById('user-level').innerText = '1'; // Placeholder for user level
+            document.getElementById('user-experience').innerText = '0'; // Placeholder for user experience
+            document.getElementById('progress').style.width = '10%'; // Placeholder for progress bar
+            document.getElementById('user-badges').innerText = 'None'; // Placeholder for user badges
+
+            // Placeholder for user activity
+            document.getElementById('activity-list').innerHTML = `
+                <li>Joined a clan</li>
+                <li>Staked tokens</li>
+                <li>Participated in governance</li>
+            `;
         } else {
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('login-form-container').querySelector('.links').style.display = 'block';
+            window.location.href = 'index.html';
         }
 
         // Add event listener to login button
