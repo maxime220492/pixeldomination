@@ -22,6 +22,24 @@
                 <li><a href="contact.html">Contact Us</a></li>
                 <li><a href="account.html">Account</a></li>
             </ul>
+            <div id="login-section">
+                <div class="links">
+                    <a href="#" id="radix-login">Login with Radix Wallet</a>
+                    <a href="#" id="google-login">Login with Google</a>
+                </div>
+                <div id="user-info" style="display: none;">
+                    <p id="welcome-message"></p>
+                    <div id="user-stats">
+                        <p>Level: <span id="user-level">1</span></p>
+                        <p>Experience: <span id="user-experience">0</span> XP</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="progress"></div>
+                        </div>
+                        <p>Badges: <span id="user-badges">None</span></p>
+                    </div>
+                    <button id="logout-button">Log Out</button>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -43,6 +61,80 @@
     </footer>
 
     <script>
+        netlifyIdentity.init();
+
+// Check if the user is logged in
+const user = netlifyIdentity.currentUser();
+const userInfo = document.getElementById('user-info');
+const loginSection = document.getElementById('login-section');
+const loginLinks = document.querySelector('.links');
+
+if (user) {
+    const userName = user.user_metadata.full_name || user.email;
+    document.getElementById('welcome-message').innerText = `Welcome, ${userName}`;
+    document.getElementById('user-level').innerText = '1'; // Placeholder for user level
+    document.getElementById('user-experience').innerText = '0'; // Placeholder for user experience
+    document.getElementById('progress').style.width = '10%'; // Placeholder for progress bar
+    document.getElementById('user-badges').innerText = 'None'; // Placeholder for user badges
+
+    userInfo.style.display = 'block';
+    loginLinks.style.display = 'none';
+} else {
+    userInfo.style.display = 'none';
+    loginLinks.style.display = 'block';
+}
+
+// Add event listener to Google login button
+document.getElementById('google-login').addEventListener('click', () => {
+    netlifyIdentity.open('login');
+});
+
+// Listen for login event
+netlifyIdentity.on('login', user => {
+    console.log('Logged in user:', user);
+    const userName = user.user_metadata.full_name || user.email;
+    document.getElementById('welcome-message').innerText = `Welcome, ${userName}`;
+    document.getElementById('user-level').innerText = '1'; // Placeholder for user level
+    document.getElementById('user-experience').innerText = '0'; // Placeholder for user experience
+    document.getElementById('progress').style.width = '10%'; // Placeholder for progress bar
+    document.getElementById('user-badges').innerText = 'None'; // Placeholder for user badges
+
+    userInfo.style.display = 'block';
+    loginLinks.style.display = 'none';
+});
+
+// Listen for logout event
+netlifyIdentity.on('logout', () => {
+    console.log('User logged out');
+    userInfo.style.display = 'none';
+    loginLinks.style.display = 'block';
+});
+
+// Radix DLT Wallet Login
+document.getElementById('radix-login').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+        // Example Radix DLT login process
+        const wallet = await RadixDLT.wallet();
+        const account = await wallet.connect();
+        document.getElementById('welcome-message').innerText = `Wallet Address: ${account.address}`;
+        document.getElementById('user-level').innerText = '1'; // Placeholder for user level
+        document.getElementById('user-experience').innerText = '0'; // Placeholder for user experience
+        document.getElementById('progress').style.width = '10%'; // Placeholder for progress bar
+        document.getElementById('user-badges').innerText = 'None'; // Placeholder for user badges
+
+        userInfo.style.display = 'block';
+        loginLinks.style.display = 'none';
+    } catch (error) {
+        console.error('Radix DLT login failed:', error);
+    }
+});
+
+// Add event listener to logout button
+document.getElementById('logout-button').addEventListener('click', () => {
+    netlifyIdentity.logout();
+    window.location.href = 'index.html';
+});
         document.getElementById('purchase-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tokenAmount = document.getElementById('token-amount').value;
