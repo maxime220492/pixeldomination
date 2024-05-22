@@ -17,24 +17,20 @@
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="how-to-play.html">How to Play</a></li>
                 <li><a href="clans.html">Clans</a></li>
-                <li><a href="marketplace.html">Marketplace</a></li>
+                <li><a href="purchase.html">Purchase</a></li>
                 <li><a href="news.html">News</a></li>
                 <li><a href="contact.html">Contact Us</a></li>
                 <li><a href="account.html">Account</a></li>
             </ul>
-            
         </nav>
         <button id="logout-button" style="display:none;">Log Out</button>
     </header>
 
     <main>
         <section class="account">
-            <h1>Account Details</h1>
-            <div id="user-details">
-                <p>Please log in to view your account details.</p>
-            </div>
-            <div class="form-container" id="login-form-container">
-                <form id="login-form" style="display:none;">
+            <h1>Account Login</h1>
+            <div class="form-container">
+                <form id="login-form">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
 
@@ -43,32 +39,17 @@
 
                     <button type="submit">Log In</button>
                 </form>
-                <div class="links" style="display:none;">
-                    <a href="#" id="radix-login">Login with Radix Wallet</a>
+                <div class="links">
+                    <button id="radix-login">Login with Radix Wallet</button>
                     <a href="#" id="google-login">Login with Google</a>
                 </div>
             </div>
-        </section>
-        <section class="account">
-            <h1>Welcome to Your Account</h1>
-            <div id="user-details">
-                <!-- User details will be displayed here -->
-            </div>
-            <div id="user-stats">
-                <h2>Your Stats</h2>
-                <p>Level: <span id="user-level">1</span></p>
-                <p>Experience: <span id="user-experience">0</span> XP</p>
-                <div class="progress-bar">
-                    <div class="progress" id="progress"></div>
+            <section class="account">
+                <h1>Account Details</h1>
+                <div id="user-details">
+                    <!-- User details will be displayed here -->
                 </div>
-                <p>Badges: <span id="user-badges">None</span></p>
-            </div>
-            <div id="user-activity">
-                <h2>Recent Activity</h2>
-                <ul id="activity-list">
-                    <li>No recent activity.</li>
-                </ul>
-            </div>
+            </section>
         </section>
     </main>
 
@@ -81,28 +62,6 @@
         // Initialize Netlify Identity
         netlifyIdentity.init();
 
-        const user = netlifyIdentity.currentUser();
-        if (user) {
-            const userName = user.user_metadata.full_name || user.email;
-            document.getElementById('user-details').innerHTML = `
-                <p><strong>Username:</strong> ${userName}</p>
-                <p><strong>Email:</strong> ${user.email}</p>
-            `;
-            document.getElementById('user-level').innerText = '1'; // Placeholder for user level
-            document.getElementById('user-experience').innerText = '0'; // Placeholder for user experience
-            document.getElementById('progress').style.width = '10%'; // Placeholder for progress bar
-            document.getElementById('user-badges').innerText = 'None'; // Placeholder for user badges
-
-            // Placeholder for user activity
-            document.getElementById('activity-list').innerHTML = `
-                <li>Joined a clan</li>
-                <li>Staked tokens</li>
-                <li>Participated in governance</li>
-            `;
-        } else {
-            window.location.href = 'index.html';
-        }
-
         // Add event listener to login button
         document.getElementById('google-login').addEventListener('click', () => {
             netlifyIdentity.open('login');
@@ -111,46 +70,50 @@
         // Listen for login event
         netlifyIdentity.on('login', user => {
             console.log('Logged in user:', user);
-            document.getElementById('user-details').innerHTML = `
-                <p><strong>Username:</strong> ${user.user_metadata.full_name}</p>
-                <p><strong>Email:</strong> ${user.email}</p>
-            `;
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('login-form-container').querySelector('.links').style.display = 'none';
-            document.getElementById('logout-button').style.display = 'block';
+            window.location.href = 'account.html';
         });
 
         // Listen for logout event
         netlifyIdentity.on('logout', () => {
             console.log('User logged out');
-            document.getElementById('user-details').innerHTML = '<p>Please log in to view your account details.</p>';
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('login-form-container').querySelector('.links').style.display = 'block';
-            document.getElementById('logout-button').style.display = 'none';
         });
 
         // Radix DLT Wallet Login
         document.getElementById('radix-login').addEventListener('click', async (e) => {
             e.preventDefault();
             try {
-                // Example Radix DLT login process
                 const wallet = await RadixDLT.wallet();
-                const account = await wallet.connect();
+                await wallet.connect();
+
+                const account = await wallet.getAccount();
                 document.getElementById('user-details').innerHTML = `
                     <p><strong>Wallet Address:</strong> ${account.address}</p>
                     <p><strong>Balance:</strong> ${account.balance}</p>
                 `;
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('login-form-container').querySelector('.links').style.display = 'none';
-                document.getElementById('logout-button').style.display = 'block';
             } catch (error) {
                 console.error('Radix DLT login failed:', error);
             }
         });
 
+        // Check if the user is logged in
+        const user = netlifyIdentity.currentUser();
+        if (user) {
+            document.getElementById('user-details').innerHTML = `
+                <p><strong>Username:</strong> ${user.user_metadata.full_name}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+            `;
+        } else {
+            document.getElementById('user-details').innerHTML = '<p>Please log in to view your account details.</p>';
+        }
+
         // Add event listener to logout button
         document.getElementById('logout-button').addEventListener('click', () => {
             netlifyIdentity.logout();
+            window.location.href = 'index.html';
+        });
+
+        // Listen for logout event
+        netlifyIdentity.on('logout', () => {
             window.location.href = 'index.html';
         });
     </script>

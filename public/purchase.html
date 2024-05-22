@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Tokens - Pixel Domination</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/@radixdlt/radixdlt"></script>
+</head>
+<body>
+    <header>
+        <img src="images/logo.png" alt="Pixel Domination Logo" class="logo">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="how-to-play.html">How to Play</a></li>
+                <li><a href="clans.html">Clans</a></li>
+                <li><a href="purchase.html">Purchase</a></li>
+                <li><a href="news.html">News</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="account.html">Account</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="purchase">
+            <h1>Purchase Tokens</h1>
+            <form id="purchase-form">
+                <label for="token-amount">Amount of Tokens:</label>
+                <input type="number" id="token-amount" name="token-amount" required>
+                <button type="submit">Purchase</button>
+            </form>
+            <div id="transaction-status"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Pixel Domination. All rights reserved.</p>
+        <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
+    </footer>
+
+    <script>
+        document.getElementById('purchase-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const tokenAmount = document.getElementById('token-amount').value;
+
+            try {
+                const wallet = await RadixDLT.wallet();
+                const account = await wallet.connect();
+
+                // Create a transaction
+                const transaction = await account.createTransactionBuilder()
+                    .transferXRD('recipient-address', tokenAmount * 1e18) // convert to XRD smallest unit
+                    .build()
+                    .signAndSubmit();
+
+                document.getElementById('transaction-status').innerText = `Transaction submitted: ${transaction.hash}`;
+
+                // Verify the transaction
+                const response = await fetch('/.netlify/functions/verifyPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ transactionHash: transaction.hash }),
+                });
+
+                const result = await response.json();
+                document.getElementById('transaction-status').innerText += `\n${result.message}`;
+            } catch (error) {
+                document.getElementById('transaction-status').innerText = `Transaction failed: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

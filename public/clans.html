@@ -17,7 +17,7 @@
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="how-to-play.html">How to Play</a></li>
                 <li><a href="clans.html">Clans</a></li>
-                <li><a href="marketplace.html">Marketplace</a></li>
+                <li><a href="purchase.html">Purchase</a></li>
                 <li><a href="news.html">News</a></li>
                 <li><a href="contact.html">Contact Us</a></li>
                 <li><a href="account.html">Account</a></li>
@@ -42,7 +42,9 @@
                             <option value="open">Open</option>
                             <option value="closed">Closed</option>
                         </select>
-                        <button type="submit">Create Clan</button>
+                        <button type="button" id="pay-button">Pay 100 APT to Create Clan</button>
+                        <input type="hidden" id="payment" name="payment" value="100">
+                        <button type="submit" style="display:none;">Create Clan</button>
                     </form>
                 </div>
                 <div class="join-clan">
@@ -60,6 +62,17 @@
                     <!-- Clans will be listed here -->
                 </ul>
             </div>
+            <div id="clan-details" style="display:none;">
+                <h2>Clan Details</h2>
+                <p id="clan-name-details"></p>
+                <p id="clan-description-details"></p>
+                <p id="clan-status-details"></p>
+                <h3>Members</h3>
+                <ul id="clan-members">
+                    <!-- Members will be listed here -->
+                </ul>
+                <button id="quit-clan-button" style="display:none;" onclick="quitClan()">Quit Clan</button>
+            </div>
         </section>
     </main>
 
@@ -72,6 +85,8 @@
         // Initialize Netlify Identity
         netlifyIdentity.init();
 
+        let currentUserClan = null; // Track the current clan of the user
+
         // Check if the user is logged in
         const user = netlifyIdentity.currentUser();
         if (user) {
@@ -83,36 +98,88 @@
             window.location.href = 'index.html';
         });
 
+        // Fetch clans from the backend
+        const fetchClans = async () => {
+            const response = await fetch('/.netlify/functions/getClans');
+            const data = await response.json();
+            data.forEach(clan => addClanToList(clan));
+        };
+
+        // Handle Clan Creation Payment
+        document.getElementById('pay-button').addEventListener('click', () => {
+            const payment = document.getElementById('payment').value;
+
+            if (payment < 100) {
+                alert('You need to pay at least 100 APT to create a clan.');
+                return;
+            }
+
+            // Simulate payment processing
+            alert('Payment of 100 APT successful.');
+
+            // Show the hidden submit button and click it to submit the form
+            const createClanForm = document.getElementById('create-clan-form');
+            const submitButton = createClanForm.querySelector('button[type="submit"]');
+            submitButton.style.display = 'block';
+            submitButton.click();
+        });
+
         // Handle Clan Creation
-        document.getElementById('create-clan-form').addEventListener('submit', (e) => {
+        document.getElementById('create-clan-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const clanName = document.getElementById('clan-name').value;
             const clanDescription = document.getElementById('clan-description').value;
             const clanStatus = document.getElementById('clan-status').value;
 
-            // Mock function to save clan information (Replace with real implementation)
-            const newClan = { id: Date.now().toString(), name: clanName, description: clanDescription, status: clanStatus };
-            addClanToList(newClan);
+            // Check if the user is already in a clan
+            if (currentUserClan) {
+                alert('You are already in a clan. Please quit your current clan to create a new one.');
+                return;
+            }
+
+            // Prepare the new clan data
+            const newClan = { name: clanName, description: clanDescription, status: clanStatus, members: [{ name: user.user_metadata.full_name || user.email, level: 1 }] };
+
+            // Save clan to backend
+            const response = await fetch('/.netlify/functions/createClan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newClan),
+            });
+            const createdClan = await response.json();
+            addClanToList(createdClan);
+            currentUserClan = createdClan;
 
             alert(`Clan "${clanName}" created with status "${clanStatus}"!`);
             document.getElementById('create-clan-form').reset();
         });
 
         // Handle Clan Joining
-        document.getElementById('join-clan-form').addEventListener('submit', (e) => {
+        document.getElementById('join-clan-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const clanCode = document.getElementById('clan-code').value;
 
-            // Mock function to join clan (Replace with real implementation)
-            const clan = clans.find(c => c.id === clanCode);
-            if (clan) {
-                if (clan.status === 'open') {
-                    alert(`Joined clan: ${clan.name}`);
-                } else {
-                    alert(`Clan "${clan.name}" is closed and cannot be joined.`);
-                }
+            // Prepare the join data
+            const joinData = { clanId: clanCode, member: { name: user.user_metadata.full_name || user.email, level: 1 } };
+
+            // Find the clan by ID and attempt to join
+            const response = await fetch('/.netlify/functions/joinClan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(joinData),
+            });
+            if (response.ok) {
+                const updatedClan = await response.json();
+                currentUserClan = updatedClan;
+                alert(`Joined clan: ${updatedClan.name}`);
+                showClanDetails(updatedClan);
             } else {
-                alert(`No clan found with the provided code.`);
+                const error = await response.json();
+                alert(error.message);
             }
 
             document.getElementById('join-clan-form').reset();
@@ -122,33 +189,62 @@
         const addClanToList = (clan) => {
             const clanList = document.getElementById('clan-list');
             const li = document.createElement('li');
-            li.innerHTML = `${clan.name} (${clan.status}): ${clan.description} ${clan.status === 'open' ? `<button onclick="joinClan('${clan.id}')">Join</button>` : ''}`;
+            li.innerHTML = `<a href="#" onclick="showClanDetails('${clan.id}')">${clan.name}</a> (${clan.status}): ${clan.description}`;
             clanList.appendChild(li);
         };
 
-        // Mock function to list available clans (Replace with real data)
-        const listClans = () => {
-            clans.forEach(clan => addClanToList(clan));
-        };
-
-        // Mock data (replace with real data)
-        const clans = [
-            { id: '1', name: "Clan A", description: "The first clan", status: "open" },
-            { id: '2', name: "Clan B", description: "The second clan", status: "closed" },
-        ];
-
-        // List available clans on page load
-        listClans();
-
-        // Function to handle joining a clan from the list
-        const joinClan = (clanId) => {
+        // Function to show clan details
+        const showClanDetails = async (clanId) => {
+            const response = await fetch('/.netlify/functions/getClans');
+            const clans = await response.json();
             const clan = clans.find(c => c.id === clanId);
-            if (clan && clan.status === 'open') {
-                alert(`Joined clan: ${clan.name}`);
-            } else {
-                alert(`Clan "${clan.name}" is closed and cannot be joined.`);
+            if (clan) {
+                document.getElementById('clan-name-details').textContent = `Name: ${clan.name}`;
+                document.getElementById('clan-description-details').textContent = `Description: ${clan.description}`;
+                document.getElementById('clan-status-details').textContent = `Status: ${clan.status}`;
+                const membersList = document.getElementById('clan-members');
+                membersList.innerHTML = '';
+                clan.members.forEach(member => {
+                    const li = document.createElement('li');
+                    li.textContent = `${member.name} - Level ${member.level}`;
+                    membersList.appendChild(li);
+                });
+                document.getElementById('clan-details').style.display = 'block';
+
+                // Show quit button if the user is a member of the clan
+                if (currentUserClan && currentUserClan.id === clan.id) {
+                    document.getElementById('quit-clan-button').style.display = 'block';
+                } else {
+                    document.getElementById('quit-clan-button').style.display = 'none';
+                }
             }
         };
+
+        // Function to quit a clan
+        const quitClan = async () => {
+            if (currentUserClan) {
+                const clan = currentUserClan;
+                const response = await fetch('/.netlify/functions/quitClan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ clanId: clan.id, name: user.user_metadata.full_name || user.email }),
+                });
+                if (response.ok) {
+                    alert(`You have quit the clan: ${clan.name}`);
+                    currentUserClan = null;
+                    document.getElementById('clan-details').style.display = 'none';
+                    document.getElementById('quit-clan-button').style.display = 'none';
+                } else {
+                    const error = await response.json();
+                    alert(error.message);
+                }
+            }
+        };
+
+        // List available clans on page load
+        fetchClans();
     </script>
 </body>
 </html>

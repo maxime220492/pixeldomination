@@ -1,0 +1,9 @@
+[build]
+  publish = "public"
+  functions = "functions"
+  
+[[redirects]]
+  from = "/.netlify/identity"
+  to = "https://identity.netlify.com/.netlify/identity"
+  status = 200
+  force = true
