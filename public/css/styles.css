@@ -5,6 +5,9 @@ body {
     margin: 0;
     padding: 0;
 }
+h1{
+    font-family: 'Press Start 2P', cursive;
+}
 
 header {
     display: flex;
@@ -91,7 +94,96 @@ nav ul li a:hover {
     background-color: #e65c00;
 }
 
-.features, .testimonials, .community, .marketplace, .news, .contact, .about, .how-to-play, .account {
+.clans {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #363636;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clan-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.create-clan, .join-clan {
+    width: 48%;
+    background-color: #313131;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.clans h1 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    margin-top: -20px;    
+}
+
+.create-clan h2, .join-clan h2 {
+    margin-bottom: 10px;
+}
+
+.create-clan form, .join-clan form {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    margin-right: auto;
+}
+
+.create-clan label, .join-clan label {
+    margin-bottom: 5px;
+}
+
+.create-clan input, .join-clan input, .create-clan textarea, .join-clan button, .create-clan button {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #252525;
+    border-radius: 15px;
+}
+
+.create-clan button, .join-clan button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.create-clan button:hover, .join-clan button:hover {
+    background-color: #0056b3;
+}
+
+.clan-list {
+    margin-top: 20px;
+    background-color: #2e2e2e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(201, 8, 8, 0.1);
+}
+
+.clan-list h2 {
+    margin-bottom: 10px;
+}
+
+.clan-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.clan-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.clan-list li:last-child {
+    border-bottom: none;
+}
+
+
+.features, .testimonials, .clans, .marketplace, .news, .contact, .about, .how-to-play, .account {
     padding: 50px 20px;
     text-align: center;
     background-color: #1e1e1e;
@@ -101,10 +193,10 @@ nav ul li a:hover {
     border-radius: 10px;
 }
 
-.features h2, .testimonials h2, .community h2, .marketplace h2, .news h2, .about h1, .how-to-play h1, .account h1 {
+.features h2, .testimonials h2, .clans h2, .marketplace h2, .news h2, .about h1, .how-to-play h1, .account h1 {
     margin-bottom: 30px;
     font-size: 2.5em;
-    border-bottom: 2px solid #ff6600;
+    border-bottom: 1.5px solid #ff6600;
     display: inline-block;
     padding-bottom: 10px;
 }

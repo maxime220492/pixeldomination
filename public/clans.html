@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clans - Pixel Domination</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <img src="images/logo.png" alt="Pixel Domination Logo" class="logo">
+        <nav>
+            <ul>
+                <li><a href='/'>Home</a></li>
+                <li><a href='/about.html'>About Us</a></li>
+                <li><a href='/how-to-play.html'>How to Play</a></li>
+                <li><a href='/clans.html'>Clans</a></li>
+                <li><a href='/marketplace.html'>Marketplace</a></li>
+                <li><a href='/news.html'>News</a></li>
+                <li><a href='/contact.html'>Contact Us</a></li>
+                <li><a href='/account.html'>Account</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+    <section class="clans"> <h2>Clans & Guilds</h2>
+    <p>Form or join clans to collaborate with other players, and dominate the map together.</p>
+</section>
+<section class="clans">
+    <h1>Join or Create a Clan</h1>
+    <div class="clan-actions">
+        <div class="create-clan">
+            <h2>Create a Clan</h2>
+            <form id="create-clan-form">
+                <label for="clan-name">Clan Name:</label>
+                <input type="text" id="clan-name" name="clan-name" required>
+                <label for="clan-description">Description:</label>
+                <textarea id="clan-description" name="clan-description" required></textarea>
+                <button type="submit">Create Clan</button>
+            </form>
+        </div>
+        <div class="join-clan">
+            <h2>Join a Clan</h2>
+            <form id="join-clan-form">
+                <label for="clan-code">Clan Code:</label>
+                <input type="text" id="clan-code" name="clan-code" required>
+                <button type="submit">Join Clan</button>
+            </form>
+        </div>
+    </div>
+    <div class="clan-list">
+        <h2>Available Clans</h2>
+        <ul id="clan-list">
+            <!-- Clans will be listed here -->
+        </ul>
+    </div>
+</section>
+        
+        <section class="clans">  <h2>Leaderboards</h2>
+            <p>Check out the top players, clans, and recent achievements on our <a href="leaderboards.html">leaderboards</a>.</p>
+        </section>
+            <section class="clans"> <h2>Events</h2>
+            <p>Stay up-to-date with upcoming events, including competitions and clans meetings, in our <a href="events.html">events calendar</a>.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Pixel Domination. All rights reserved.</p>
+        <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
+    </footer>
+    <script src="js/scripts.js">
+        // Initialize Netlify Identity
+        netlifyIdentity.init();
+
+        // Check if the user is logged in
+        const user = netlifyIdentity.currentUser();
+        if (user) {
+            document.getElementById('logout-button').style.display = 'block';
+        }
+
+        // Listen for logout event
+        netlifyIdentity.on('logout', () => {
+            window.location.href = 'index.html';
+        });
+
+        // Handle Clan Creation
+        document.getElementById('create-clan-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const clanName = document.getElementById('clan-name').value;
+            const clanDescription = document.getElementById('clan-description').value;
+            // Add code to save the clan information
+            alert(`Clan ${clanName} created!`);
+        });
+
+        // Handle Clan Joining
+        document.getElementById('join-clan-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const clanCode = document.getElementById('clan-code').value;
+            // Add code to join the clan using the clan code
+            alert(`Joined clan with code: ${clanCode}`);
+        });
+
+        // Mock function to list available clans (Replace with real data)
+        const listClans = () => {
+            const clans = [
+                { name: "Clan A", description: "The first clan" },
+                { name: "Clan B", description: "The second clan" },
+            ];
+            const clanList = document.getElementById('clan-list');
+            clans.forEach(clan => {
+                const li = document.createElement('li');
+                li.textContent = `${clan.name}: ${clan.description}`;
+                clanList.appendChild(li);
+            });
+        };
+
+        // List available clans on page load
+        listClans();
+</script>
+</body>
+</html>
