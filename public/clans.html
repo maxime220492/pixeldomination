@@ -91,7 +91,7 @@
             const clanStatus = document.getElementById('clan-status').value;
 
             // Mock function to save clan information (Replace with real implementation)
-            const newClan = { name: clanName, description: clanDescription, status: clanStatus };
+            const newClan = { id: Date.now().toString(), name: clanName, description: clanDescription, status: clanStatus };
             addClanToList(newClan);
 
             alert(`Clan "${clanName}" created with status "${clanStatus}"!`);
@@ -104,7 +104,17 @@
             const clanCode = document.getElementById('clan-code').value;
 
             // Mock function to join clan (Replace with real implementation)
-            alert(`Joined clan with code: ${clanCode}`);
+            const clan = clans.find(c => c.id === clanCode);
+            if (clan) {
+                if (clan.status === 'open') {
+                    alert(`Joined clan: ${clan.name}`);
+                } else {
+                    alert(`Clan "${clan.name}" is closed and cannot be joined.`);
+                }
+            } else {
+                alert(`No clan found with the provided code.`);
+            }
+
             document.getElementById('join-clan-form').reset();
         });
 
@@ -112,21 +122,33 @@
         const addClanToList = (clan) => {
             const clanList = document.getElementById('clan-list');
             const li = document.createElement('li');
-            li.textContent = `${clan.name} (${clan.status}): ${clan.description}`;
+            li.innerHTML = `${clan.name} (${clan.status}): ${clan.description} ${clan.status === 'open' ? `<button onclick="joinClan('${clan.id}')">Join</button>` : ''}`;
             clanList.appendChild(li);
         };
 
         // Mock function to list available clans (Replace with real data)
         const listClans = () => {
-            const clans = [
-                { name: "Clan A", description: "The first clan", status: "open" },
-                { name: "Clan B", description: "The second clan", status: "closed" },
-            ];
             clans.forEach(clan => addClanToList(clan));
         };
 
+        // Mock data (replace with real data)
+        const clans = [
+            { id: '1', name: "Clan A", description: "The first clan", status: "open" },
+            { id: '2', name: "Clan B", description: "The second clan", status: "closed" },
+        ];
+
         // List available clans on page load
         listClans();
+
+        // Function to handle joining a clan from the list
+        const joinClan = (clanId) => {
+            const clan = clans.find(c => c.id === clanId);
+            if (clan && clan.status === 'open') {
+                alert(`Joined clan: ${clan.name}`);
+            } else {
+                alert(`Clan "${clan.name}" is closed and cannot be joined.`);
+            }
+        };
     </script>
 </body>
-</html> 
+</html>

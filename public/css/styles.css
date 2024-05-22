@@ -5,6 +5,7 @@ body {
     margin: 0;
     padding: 0;
 }
+
 h1{
     font-family: 'Press Start 2P', cursive;
 }
@@ -126,11 +127,12 @@ nav ul li a:hover {
     margin-bottom: 10px;
 }
 
-.create-clan form, .join-clan form {
+.create-clan form, .join-clan form, .clan-status option {
     display: flex;
     flex-direction: column;
     border-radius: 15px;
     margin-right: auto;
+    margin-bottom: 15px;
 }
 
 .create-clan label, .join-clan label {
