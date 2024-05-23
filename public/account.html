@@ -6,6 +6,8 @@
     <title>Account - Pixel Domination</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
 </head>
 <body>
     <header>
@@ -72,5 +74,14 @@
     </footer>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="js/scripts.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+<script>
+    gapi.load('auth2', function() {
+        gapi.auth2.init({
+            client_id: 'YOUR_GOOGLE_CLIENT_ID'
+        });
+    });
+</script>
+
 </body>
 </html>

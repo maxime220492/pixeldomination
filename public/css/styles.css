@@ -401,6 +401,9 @@ footer a:hover {
 .alert.info {
     background-color: #2196F3;
 }
+ .logo {
+    border-radius: 5px;
+ }
 
 /* Modals */
 .modal {
