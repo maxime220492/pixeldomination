@@ -34,6 +34,7 @@ const expForNextLevel = (level) => {
 
 // Function to handle user login
 const handleUserLogin = async (user) => {
+    console.log('Handling user login for:', user);
     let userData = await getUserData(user.id);
     if (!userData) {
         userData = {
@@ -45,6 +46,8 @@ const handleUserLogin = async (user) => {
         };
         await updateUserData(userData);
     }
+
+    console.log('User data:', userData);
 
     document.getElementById('welcome-message').innerText = `Welcome, ${user.user_metadata.full_name || user.email}`;
     document.getElementById('user-level').innerText = userData.level;
@@ -59,7 +62,6 @@ const handleUserLogin = async (user) => {
 
 // Initialize page content
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialize Netlify Identity
     if (window.netlifyIdentity) {
         window.netlifyIdentity.on('init', user => {
             if (user) {
@@ -72,7 +74,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         window.netlifyIdentity.on('logout', () => {
-            handleLogout();
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('login-section').style.display = 'block';
         });
     }
 
