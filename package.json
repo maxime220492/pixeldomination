@@ -1,5 +1,17 @@
 {
+  "name": "pixel-domination",
+  "version": "1.0.0",
+  "description": "Pixel Domination website",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Building the project...'",
+    "start": "live-server public"
+  },
+  "author": "Your Name",
+  "license": "ISC",
   "dependencies": {
+    "live-server": "^1.2.1",
     "node-fetch": "^3.3.2"
-  }
+  },
+  "devDependencies": {}
 }
