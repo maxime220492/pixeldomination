@@ -1,15 +1,19 @@
-let clans = [
-    { id: '1', name: "Clan A", description: "The first clan", status: "open", members: [{ name: "Alice", level: 10 }, { name: "Bob", level: 5 }] },
-    { id: '2', name: "Clan B", description: "The second clan", status: "closed", members: [{ name: "Charlie", level: 8 }, { name: "Dave", level: 3 }] },
-];
+exports.handler = async (event) => {
+    const { name, description, status } = JSON.parse(event.body);
 
-exports.handler = async (event, context) => {
-    const newClan = JSON.parse(event.body);
-    newClan.id = Date.now().toString();
-    clans.push(newClan);
+    const newClan = {
+        id: Date.now().toString(),
+        name,
+        description,
+        status,
+        members: [],
+    };
+
+    // Assuming you have a function to save the clan to a database
+    await saveClanToDatabase(newClan);
 
     return {
-        statusCode: 201,
+        statusCode: 200,
         body: JSON.stringify(newClan),
     };
 };

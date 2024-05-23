@@ -14,14 +14,14 @@
         <img src="images/logo.png" alt="Pixel Domination Logo" class="logo">
         <nav>
             <ul>
-                <li><a href='/'>Home</a></li>
-                <li><a href='/about.html'>About Us</a></li>
-                <li><a href='/how-to-play.html'>How to Play</a></li>
-                <li><a href='/clans.html'>Clans</a></li>
-                <li><a href="purchase.html">Purchase</a></li>
-                <li><a href='/news.html'>News</a></li>
-                <li><a href='/contact.html'>Contact Us</a></li>
-                <li><a href='/account.html'>Account</a></li>
+                <li><a href='index.html' class="active">Home</a></li>
+                <li><a href='about.html'>About Us</a></li>
+                <li><a href='how-to-play.html'>How to Play</a></li>
+                <li><a href='clans.html'>Clans</a></li>
+                <li><a href='purchase.html'>Purchase</a></li>
+                <li><a href='news.html'>News</a></li>
+                <li><a href='contact.html'>Contact Us</a></li>
+                <li><a href='account.html'>Account</a></li>
             </ul>
             <div id="login-section">
                 <div class="links">
@@ -33,8 +33,8 @@
                     <div id="user-stats">
                         <p>Level: <span id="user-level">1</span></p>
                         <p>Experience: <span id="user-experience">0</span> XP</p>
-                        <div class="progress-bar">
-                            <div class="progress" id="progress"></div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progress"></div>
                         </div>
                         <p>Badges: <span id="user-badges">None</span></p>
                     </div>
@@ -48,36 +48,40 @@
         <div class="hero-content">
             <h1>Welcome to Pixel Domination</h1>
             <p>Shape, Share, and Strategize on the Blockchain-Powered Digital Map</p>
-            <a class='btn' href='/how-to-play.html'>Join Now</a>
-            <a class='btn' href='/about.html'>Learn More</a>
+            <div class="hero-buttons">
+                <a href='how-to-play.html' class="btn">Join Now</a>
+                <a href='about.html' class="btn">Learn More</a>
+            </div>
         </div>
     </section>    
 
-    <section id="features" class="features">
+    <section id="features" class="features container">
         <h2>Key Features</h2>
-        <div class="feature-item">
-            <img src="images/map.jpg" alt="Interactive Map">
-            <h1>Interactive Map</h1>
-            <p>Explore the ever-expanding digital world, where every player's action contributes to the map's evolution.</p>
-        </div>
-        <div class="feature-item">
-            <img src="images/GM.png" alt="Game Modes">
-            <h1>Game Modes</h1>
-            <p>Choose your path with Weekly Wipe, Monthly Wipe, or Fixed Board modes.</p>
-        </div>
-        <div class="feature-item">
-            <img src="images/tok.jpg" alt="Tokenomics">
-            <h1>Tokenomics</h1>
-            <p>Utilize AdPixel Tokens (APT) for bidding, development, and governance.</p>
-        </div>
-        <div class="feature-item">
-            <img src="images/gov.jpg" alt="clans & Governance">
-            <h1>clans & Governance</h1>
-            <p>Join clans, stake tokens, and participate in the decision-making process.</p>
+        <div class="card-container">
+            <div class="card-item">
+                <img src="images/map.jpg" alt="Interactive Map">
+                <h3>Interactive Map</h3>
+                <p>Explore the ever-expanding digital world, where every player's action contributes to the map's evolution.</p>
+            </div>
+            <div class="card-item">
+                <img src="images/GM.png" alt="Game Modes">
+                <h3>Game Modes</h3>
+                <p>Choose your path with Weekly Wipe, Monthly Wipe, or Fixed Board modes.</p>
+            </div>
+            <div class="card-item">
+                <img src="images/tok.jpg" alt="Tokenomics">
+                <h3>Tokenomics</h3>
+                <p>Utilize AdPixel Tokens (APT) for bidding, development, and governance.</p>
+            </div>
+            <div class="card-item">
+                <img src="images/gov.jpg" alt="Clans & Governance">
+                <h3>Clans & Governance</h3>
+                <p>Join clans, stake tokens, and participate in the decision-making process.</p>
+            </div>
         </div>
     </section>
 
-    <section class="testimonials">
+    <section class="testimonials container">
         <h2>User Testimonials</h2>
         <blockquote>"Pixel Domination is a game-changer! The strategic depth and clans engagement are unparalleled."</blockquote>
     </section>
@@ -87,82 +91,6 @@
         <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
     </footer>
 
-    <script>
-        // Initialize Netlify Identity
-        netlifyIdentity.init();
-
-        // Check if the user is logged in
-        const user = netlifyIdentity.currentUser();
-        const userInfo = document.getElementById('user-info');
-        const loginSection = document.getElementById('login-section');
-        const loginLinks = document.querySelector('.links');
-
-        if (user) {
-            const userName = user.user_metadata.full_name || user.email;
-            document.getElementById('welcome-message').innerText = `Welcome, ${userName}`;
-            document.getElementById('user-level').innerText = '1'; // Placeholder for user level
-            document.getElementById('user-experience').innerText = '0'; // Placeholder for user experience
-            document.getElementById('progress').style.width = '10%'; // Placeholder for progress bar
-            document.getElementById('user-badges').innerText = 'None'; // Placeholder for user badges
-
-            userInfo.style.display = 'block';
-            loginLinks.style.display = 'none';
-        } else {
-            userInfo.style.display = 'none';
-            loginLinks.style.display = 'block';
-        }
-
-        // Add event listener to Google login button
-        document.getElementById('google-login').addEventListener('click', () => {
-            netlifyIdentity.open('login');
-        });
-
-        // Listen for login event
-        netlifyIdentity.on('login', user => {
-            console.log('Logged in user:', user);
-            const userName = user.user_metadata.full_name || user.email;
-            document.getElementById('welcome-message').innerText = `Welcome, ${userName}`;
-            document.getElementById('user-level').innerText = '1'; // Placeholder for user level
-            document.getElementById('user-experience').innerText = '0'; // Placeholder for user experience
-            document.getElementById('progress').style.width = '10%'; // Placeholder for progress bar
-            document.getElementById('user-badges').innerText = 'None'; // Placeholder for user badges
-
-            userInfo.style.display = 'block';
-            loginLinks.style.display = 'none';
-        });
-
-        // Listen for logout event
-        netlifyIdentity.on('logout', () => {
-            console.log('User logged out');
-            userInfo.style.display = 'none';
-            loginLinks.style.display = 'block';
-        });
-
-        // Radix DLT Wallet Login
-        document.getElementById('radix-login').addEventListener('click', async (e) => {
-            e.preventDefault();
-            try {
-                // Example Radix DLT login process
-                const wallet = await RadixDLT.wallet();
-                const account = await wallet.connect();
-                document.getElementById('welcome-message').innerText = `Wallet Address: ${account.address}`;
-                document.getElementById('user-level').innerText = '1'; // Placeholder for user level
-                document.getElementById('user-experience').innerText = '0'; // Placeholder for user experience
-                document.getElementById('progress').style.width = '10%'; // Placeholder for progress bar
-                document.getElementById('user-badges').innerText = 'None'; // Placeholder for user badges
-
-                userInfo.style.display = 'block';
-                loginLinks.style.display = 'none';
-            } catch (error) {
-                console.error('Radix DLT login failed:', error);
-            }
-        });
-
-        // Add event listener to logout button
-        document.getElementById('logout-button').addEventListener('click', () => {
-            netlifyIdentity.logout();
-            window.location.href = 'index.html';
-        });
-    </script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>

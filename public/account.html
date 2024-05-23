@@ -6,116 +6,71 @@
     <title>Account - Pixel Domination</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
     <header>
         <img src="images/logo.png" alt="Pixel Domination Logo" class="logo">
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="how-to-play.html">How to Play</a></li>
-                <li><a href="clans.html">Clans</a></li>
-                <li><a href="purchase.html">Purchase</a></li>
-                <li><a href="news.html">News</a></li>
-                <li><a href="contact.html">Contact Us</a></li>
-                <li><a href="account.html">Account</a></li>
+                <li><a href='index.html'>Home</a></li>
+                <li><a href='about.html'>About Us</a></li>
+                <li><a href='how-to-play.html'>How to Play</a></li>
+                <li><a href='clans.html'>Clans</a></li>
+                <li><a href='purchase.html'>Purchase</a></li>
+                <li><a href='news.html'>News</a></li>
+                <li><a href='contact.html'>Contact Us</a></li>
+                <li><a href='account.html' class="active">Account</a></li>
             </ul>
+            
         </nav>
-        <button id="logout-button" style="display:none;">Log Out</button>
     </header>
 
-    <main>
-        <section class="account">
-            <h1>Account Login</h1>
-            <div class="form-container">
-                <form id="login-form">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
-
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-
-                    <button type="submit">Log In</button>
-                </form>
+    <section class="container">
+        <h1>Account Login</h1>
+        
+        <form id="login-form" class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" class="form-control" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" class="form-control" required>
+            <button type="submit" class="button-primary">Log In</button>
+            <div id="login-section">
                 <div class="links">
-                    <button id="radix-login">Login with Radix Wallet</button>
+                    <a href="#" id="radix-login">Login with Radix Wallet</a>
                     <a href="#" id="google-login">Login with Google</a>
                 </div>
-            </div>
-            <section class="account">
-                <h1>Account Details</h1>
-                <div id="user-details">
-                    <!-- User details will be displayed here -->
+                <div id="user-info" style="display: none;">
+                    <p id="welcome-message"></p>
+                    <div id="user-stats">
+                        <p>Level: <span id="user-level">1</span></p>
+                        <p>Experience: <span id="user-experience">0</span> XP</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="progress"></div>
+                        </div>
+                        <p>Badges: <span id="user-badges">None</span></p>
+                    </div>
+                    <button id="logout-button">Log Out</button>
                 </div>
-            </section>
-        </section>
-    </main>
+        </form>
+        
+
+        <div id="account-details" style="display: none;">
+            <h2>Account Details</h2>
+            <p>Username: <span id="account-username"></span></p>
+            <p>Email: <span id="account-email"></span></p>
+            <p>Level: <span id="account-level"></span></p>
+            <p>Experience: <span id="account-experience"></span></p>
+            <p>Badges: <span id="account-badges"></span></p>
+            <button id="logout-button" class="button-primary">Log Out</button>
+        </div>
+    </section>
+    
 
     <footer>
         <p>&copy; 2024 Pixel Domination. All rights reserved.</p>
         <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
     </footer>
 
-    <script>
-        // Initialize Netlify Identity
-        netlifyIdentity.init();
-
-        // Add event listener to login button
-        document.getElementById('google-login').addEventListener('click', () => {
-            netlifyIdentity.open('login');
-        });
-
-        // Listen for login event
-        netlifyIdentity.on('login', user => {
-            console.log('Logged in user:', user);
-            window.location.href = 'account.html';
-        });
-
-        // Listen for logout event
-        netlifyIdentity.on('logout', () => {
-            console.log('User logged out');
-        });
-
-        // Radix DLT Wallet Login
-        document.getElementById('radix-login').addEventListener('click', async (e) => {
-            e.preventDefault();
-            try {
-                const wallet = await RadixDLT.wallet();
-                await wallet.connect();
-
-                const account = await wallet.getAccount();
-                document.getElementById('user-details').innerHTML = `
-                    <p><strong>Wallet Address:</strong> ${account.address}</p>
-                    <p><strong>Balance:</strong> ${account.balance}</p>
-                `;
-            } catch (error) {
-                console.error('Radix DLT login failed:', error);
-            }
-        });
-
-        // Check if the user is logged in
-        const user = netlifyIdentity.currentUser();
-        if (user) {
-            document.getElementById('user-details').innerHTML = `
-                <p><strong>Username:</strong> ${user.user_metadata.full_name}</p>
-                <p><strong>Email:</strong> ${user.email}</p>
-            `;
-        } else {
-            document.getElementById('user-details').innerHTML = '<p>Please log in to view your account details.</p>';
-        }
-
-        // Add event listener to logout button
-        document.getElementById('logout-button').addEventListener('click', () => {
-            netlifyIdentity.logout();
-            window.location.href = 'index.html';
-        });
-
-        // Listen for logout event
-        netlifyIdentity.on('logout', () => {
-            window.location.href = 'index.html';
-        });
-    </script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>

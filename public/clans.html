@@ -6,245 +6,62 @@
     <title>Clans - Pixel Domination</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
     <header>
         <img src="images/logo.png" alt="Pixel Domination Logo" class="logo">
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="how-to-play.html">How to Play</a></li>
-                <li><a href="clans.html">Clans</a></li>
-                <li><a href="purchase.html">Purchase</a></li>
-                <li><a href="news.html">News</a></li>
-                <li><a href="contact.html">Contact Us</a></li>
-                <li><a href="account.html">Account</a></li>
+                <li><a href='index.html'>Home</a></li>
+                <li><a href='about.html'>About Us</a></li>
+                <li><a href='how-to-play.html'>How to Play</a></li>
+                <li><a href='clans.html' class="active">Clans</a></li>
+                <li><a href='purchase.html'>Purchase</a></li>
+                <li><a href='news.html'>News</a></li>
+                <li><a href='contact.html'>Contact Us</a></li>
+                <li><a href='account.html'>Account</a></li>
             </ul>
         </nav>
-        <button id="logout-button" style="display:none;">Log Out</button>
     </header>
 
-    <main>
-        <section class="clans">
-            <h1>Join or Create a Clan</h1>
-            <div class="clan-actions">
-                <div class="create-clan">
-                    <h2>Create a Clan</h2>
-                    <form id="create-clan-form">
-                        <label for="clan-name">Clan Name:</label>
-                        <input type="text" id="clan-name" name="clan-name" required>
-                        <label for="clan-description">Description:</label>
-                        <textarea id="clan-description" name="clan-description" required></textarea>
-                        <label for="clan-status">Status:</label>
-                        <select id="clan-status" name="clan-status">
-                            <option value="open">Open</option>
-                            <option value="closed">Closed</option>
-                        </select>
-                        <button type="button" id="pay-button">Pay 100 APT to Create Clan</button>
-                        <input type="hidden" id="payment" name="payment" value="100">
-                        <button type="submit" style="display:none;">Create Clan</button>
-                    </form>
-                </div>
-                <div class="join-clan">
-                    <h2>Join a Clan</h2>
-                    <form id="join-clan-form">
-                        <label for="clan-code">Clan Code:</label>
-                        <input type="text" id="clan-code" name="clan-code" required>
-                        <button type="submit">Join Clan</button>
-                    </form>
-                </div>
-            </div>
-            <div class="clan-list">
-                <h2>Available Clans</h2>
-                <ul id="clan-list">
-                    <!-- Clans will be listed here -->
-                </ul>
-            </div>
-            <div id="clan-details" style="display:none;">
-                <h2>Clan Details</h2>
-                <p id="clan-name-details"></p>
-                <p id="clan-description-details"></p>
-                <p id="clan-status-details"></p>
-                <h3>Members</h3>
-                <ul id="clan-members">
-                    <!-- Members will be listed here -->
-                </ul>
-                <button id="quit-clan-button" style="display:none;" onclick="quitClan()">Quit Clan</button>
-            </div>
-        </section>
-    </main>
+    <section class="container">
+        <h1>Join or Create a Clan</h1>
+        <div class="clan-form">
+            <h2>Create a Clan</h2>
+            <form id="create-clan-form" class="form-group">
+                <label for="clan-name">Clan Name:</label>
+                <input type="text" id="clan-name" class="form-control" required>
+                <label for="clan-description">Description:</label>
+                <input type="text" id="clan-description" class="form-control" required>
+                <label for="clan-status">Status:</label>
+                <select id="clan-status" class="form-control" required>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                </select>
+                <button type="submit" class="button-primary">Create Clan</button>
+            </form>
+        </div>
+        <div class="clan-form">
+            <h2>Join a Clan</h2>
+            <form id="join-clan-form" class="form-group">
+                <label for="clan-code">Clan Code:</label>
+                <input type="text" id="clan-code" class="form-control" required>
+                <button type="submit" class="button-primary">Join Clan</button>
+            </form>
+        </div>
+        <div class="clan-list">
+            <h2>Available Clans</h2>
+            <ul id="clan-list">
+                <!-- Clans will be dynamically inserted here -->
+            </ul>
+        </div>
+    </section>
 
     <footer>
         <p>&copy; 2024 Pixel Domination. All rights reserved.</p>
         <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
     </footer>
 
-    <script>
-        // Initialize Netlify Identity
-        netlifyIdentity.init();
-
-        let currentUserClan = null; // Track the current clan of the user
-
-        // Check if the user is logged in
-        const user = netlifyIdentity.currentUser();
-        if (user) {
-            document.getElementById('logout-button').style.display = 'block';
-        }
-
-        // Listen for logout event
-        netlifyIdentity.on('logout', () => {
-            window.location.href = 'index.html';
-        });
-
-        // Fetch clans from the backend
-        const fetchClans = async () => {
-            const response = await fetch('/.netlify/functions/getClans');
-            const data = await response.json();
-            data.forEach(clan => addClanToList(clan));
-        };
-
-        // Handle Clan Creation Payment
-        document.getElementById('pay-button').addEventListener('click', () => {
-            const payment = document.getElementById('payment').value;
-
-            if (payment < 100) {
-                alert('You need to pay at least 100 APT to create a clan.');
-                return;
-            }
-
-            // Simulate payment processing
-            alert('Payment of 100 APT successful.');
-
-            // Show the hidden submit button and click it to submit the form
-            const createClanForm = document.getElementById('create-clan-form');
-            const submitButton = createClanForm.querySelector('button[type="submit"]');
-            submitButton.style.display = 'block';
-            submitButton.click();
-        });
-
-        // Handle Clan Creation
-        document.getElementById('create-clan-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const clanName = document.getElementById('clan-name').value;
-            const clanDescription = document.getElementById('clan-description').value;
-            const clanStatus = document.getElementById('clan-status').value;
-
-            // Check if the user is already in a clan
-            if (currentUserClan) {
-                alert('You are already in a clan. Please quit your current clan to create a new one.');
-                return;
-            }
-
-            // Prepare the new clan data
-            const newClan = { name: clanName, description: clanDescription, status: clanStatus, members: [{ name: user.user_metadata.full_name || user.email, level: 1 }] };
-
-            // Save clan to backend
-            const response = await fetch('/.netlify/functions/createClan', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newClan),
-            });
-            const createdClan = await response.json();
-            addClanToList(createdClan);
-            currentUserClan = createdClan;
-
-            alert(`Clan "${clanName}" created with status "${clanStatus}"!`);
-            document.getElementById('create-clan-form').reset();
-        });
-
-        // Handle Clan Joining
-        document.getElementById('join-clan-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const clanCode = document.getElementById('clan-code').value;
-
-            // Prepare the join data
-            const joinData = { clanId: clanCode, member: { name: user.user_metadata.full_name || user.email, level: 1 } };
-
-            // Find the clan by ID and attempt to join
-            const response = await fetch('/.netlify/functions/joinClan', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(joinData),
-            });
-            if (response.ok) {
-                const updatedClan = await response.json();
-                currentUserClan = updatedClan;
-                alert(`Joined clan: ${updatedClan.name}`);
-                showClanDetails(updatedClan);
-            } else {
-                const error = await response.json();
-                alert(error.message);
-            }
-
-            document.getElementById('join-clan-form').reset();
-        });
-
-        // Function to add clan to the list
-        const addClanToList = (clan) => {
-            const clanList = document.getElementById('clan-list');
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="#" onclick="showClanDetails('${clan.id}')">${clan.name}</a> (${clan.status}): ${clan.description}`;
-            clanList.appendChild(li);
-        };
-
-        // Function to show clan details
-        const showClanDetails = async (clanId) => {
-            const response = await fetch('/.netlify/functions/getClans');
-            const clans = await response.json();
-            const clan = clans.find(c => c.id === clanId);
-            if (clan) {
-                document.getElementById('clan-name-details').textContent = `Name: ${clan.name}`;
-                document.getElementById('clan-description-details').textContent = `Description: ${clan.description}`;
-                document.getElementById('clan-status-details').textContent = `Status: ${clan.status}`;
-                const membersList = document.getElementById('clan-members');
-                membersList.innerHTML = '';
-                clan.members.forEach(member => {
-                    const li = document.createElement('li');
-                    li.textContent = `${member.name} - Level ${member.level}`;
-                    membersList.appendChild(li);
-                });
-                document.getElementById('clan-details').style.display = 'block';
-
-                // Show quit button if the user is a member of the clan
-                if (currentUserClan && currentUserClan.id === clan.id) {
-                    document.getElementById('quit-clan-button').style.display = 'block';
-                } else {
-                    document.getElementById('quit-clan-button').style.display = 'none';
-                }
-            }
-        };
-
-        // Function to quit a clan
-        const quitClan = async () => {
-            if (currentUserClan) {
-                const clan = currentUserClan;
-                const response = await fetch('/.netlify/functions/quitClan', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ clanId: clan.id, name: user.user_metadata.full_name || user.email }),
-                });
-                if (response.ok) {
-                    alert(`You have quit the clan: ${clan.name}`);
-                    currentUserClan = null;
-                    document.getElementById('clan-details').style.display = 'none';
-                    document.getElementById('quit-clan-button').style.display = 'none';
-                } else {
-                    const error = await response.json();
-                    alert(error.message);
-                }
-            }
-        };
-
-        // List available clans on page load
-        fetchClans();
-    </script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>
