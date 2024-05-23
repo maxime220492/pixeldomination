@@ -53,8 +53,8 @@ const handleUserLogin = async (user) => {
     document.getElementById('progress').style.width = `${progress}%`;
     document.getElementById('user-badges').innerText = userData.badges.join(', ') || 'None';
 
-    userInfo.style.display = 'block';
-    loginLinks.style.display = 'none';
+    document.getElementById('user-info').style.display = 'block';
+    document.getElementById('login-section').style.display = 'none';
 };
 
 // Initialize page content
@@ -63,12 +63,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.netlifyIdentity) {
         window.netlifyIdentity.on('init', user => {
             if (user) {
-                handleLogin(user);
+                handleUserLogin(user);
             }
         });
 
         window.netlifyIdentity.on('login', user => {
-            handleLogin(user);
+            handleUserLogin(user);
         });
 
         window.netlifyIdentity.on('logout', () => {
@@ -102,8 +102,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('progress').style.width = '10%';
             document.getElementById('user-badges').innerText = 'None';
 
-            userInfo.style.display = 'block';
-            loginLinks.style.display = 'none';
+            document.getElementById('user-info').style.display = 'block';
+            document.querySelector('.links').style.display = 'none';
         } catch (error) {
             console.error('Radix DLT login failed:', error);
         }
