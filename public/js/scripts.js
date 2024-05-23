@@ -368,6 +368,37 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('logout-button').addEventListener('click', function() {
         netlifyIdentity.logout();
     });
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        const stripe = Stripe('your-publishable-key-here'); // Replace with your Stripe publishable key
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+      
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+      
+          const { token, error } = await stripe.createToken(cardElement);
+      
+          if (error) {
+            console.error(error);
+          } else {
+            const response = await fetch('/.netlify/functions/processPayment', {
+              method: 'POST',
+              body: JSON.stringify({ token: token.id, amount: document.getElementById('amount').value }),
+            });
+      
+            const result = await response.json();
+            if (result.error) {
+              console.error(result.error);
+            } else {
+              console.log('Payment successful:', result);
+            }
+          }
+        });
+      });
+      
 
     function handleLogin(user) {
         document.getElementById('login-section').style.display = 'none';
